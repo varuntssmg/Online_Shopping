@@ -2,34 +2,41 @@ package online.store.model;
 
 import javax.persistence.*;
 
-/**
- * @author Michael Pogrebinsky - www.topdeveloperacademy.com
- * Represents an order of a product from our online store, stored in the Orders table.
- * Each order can contain multiple items of the same product
- * You do not need to modify this file
- */
 @Entity
-@Table(name = "Orders")
+@Table(name = "ORDERS")
 public class Order {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
-    private String lastName;
-    private String email;
-    private String shippingAddress;
-    private long quantity;
-    private String creditCard;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private String lastName;
+
+    private String email;
+
+    private String shippingAddress;
+
+    private long quantity;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "PRODUCT_ID")
     private Product product;
+
+    private String creditCard;
 
     public Order() {
     }
 
-    public Order(String firstName, String lastName, String email, String shippingAddress, long quantity, Product product, String creditCard) {
+    public Order(String firstName,
+                 String lastName,
+                 String email,
+                 String shippingAddress,
+                 long quantity,
+                 Product product,
+                 String creditCard) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -43,32 +50,63 @@ public class Order {
         return id;
     }
 
-    public long getQuantity() {
-        return quantity;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getShippingAddress() {
         return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 
     public Product getProduct() {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public String getCreditCard() {
         return creditCard;
+    }
+
+    public void setCreditCard(String creditCard) {
+        this.creditCard = creditCard;
     }
 }

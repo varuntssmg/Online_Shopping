@@ -1,4 +1,4 @@
-var localStorage = Window.localStorage;
+var localStorage = window.localStorage;
 var productsInCart = new Map();
 $( document ).ready(function() {
     loadProductInCart();

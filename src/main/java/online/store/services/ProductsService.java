@@ -4,6 +4,7 @@ package online.store.services;
 import online.store.model.Product;
 import online.store.repositories.ProductCategoryRepository;
 import online.store.repositories.ProductRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,9 +48,20 @@ public class ProductsService {
         return productRepository.findByCategory(productCategory);
     }
 
-    // 4. NEW: Get all products
+    // 4. Get all products
     public List<Product> getAllProducts() {
 
         return productRepository.findAll();
+    }
+
+    // 5. NEW: Get product by ID
+    public Product getProductById(long id) {
+
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format(
+                                "Product with id %s doesn't exist", id
+                        )
+                ));
     }
 }
