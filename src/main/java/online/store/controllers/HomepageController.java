@@ -21,7 +21,7 @@ public class HomepageController {
         this.productsService = productsService;
     }
 
-    // 1. Get product categories
+    // 1. Get all categories
     @GetMapping("/categories")
     public String getProductCategories() {
 
@@ -41,13 +41,21 @@ public class HomepageController {
         );
     }
 
-    // 3. Get products by category
+    // 3. Get products by category OR get all products
     @GetMapping("/products")
     public ProductsWrapper getProductsForCategory(
-            @RequestParam(name = "category") String category) {
+            @RequestParam(name = "category", required = false)
+            String category) {
+
+        if (category != null && !category.isEmpty()) {
+
+            return new ProductsWrapper(
+                    productsService.getProductsByCategory(category)
+            );
+        }
 
         return new ProductsWrapper(
-                productsService.getProductsByCategory(category)
+                productsService.getAllProducts()
         );
     }
 }

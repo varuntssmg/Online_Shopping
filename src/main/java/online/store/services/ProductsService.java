@@ -23,7 +23,7 @@ public class ProductsService {
         this.productCategoryRepository = productCategoryRepository;
     }
 
-    // 1. Load all supported categories
+    // 1. Get all supported categories
     public List<String> getAllSupportedCategories() {
 
         return productCategoryRepository.findAll()
@@ -32,7 +32,7 @@ public class ProductsService {
                 .collect(Collectors.toList());
     }
 
-    // 2. Load deals of the day
+    // 2. Get deals of the day
     public List<Product> getDealsOfTheDay(
             int atMostNumberOfProducts) {
 
@@ -40,10 +40,16 @@ public class ProductsService {
                 atMostNumberOfProducts);
     }
 
-    // 3. NEW: Load products by category
+    // 3. Get products by category
     public List<Product> getProductsByCategory(
             String productCategory) {
 
         return productRepository.findByCategory(productCategory);
+    }
+
+    // 4. NEW: Get all products
+    public List<Product> getAllProducts() {
+
+        return productRepository.findAll();
     }
 }
