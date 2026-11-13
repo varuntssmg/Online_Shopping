@@ -8,6 +8,8 @@ import online.store.services.OrdersService;
 import online.store.services.ProductsService;
 import online.store.services.CreditCardValidationService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,24 +37,49 @@ public class CheckoutController {
 
     // Complete purchase API
     @PostMapping("/checkout")
-    public String checkout(
+    public ResponseEntity<String> checkout(
             @RequestBody CheckoutRequest checkoutRequest) {
 
-        // Step 1: Validate credit card
+        // Step 1: Validate credit card information
+        if (isNullOrBlank(checkoutRequest.getCreditCard())) {
+
+            return new ResponseEntity<>(
+                    "Credit card information is missing",
+                    HttpStatus.PAYMENT_REQUIRED
+            );
+        }
+
+        // Step 2: Validate first name
+        if (isNullOrBlank(checkoutRequest.getFirstName())) {
+
+            return new ResponseEntity<>(
+                    "First name is missing",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        // Step 3: Validate last name
+        if (isNullOrBlank(checkoutRequest.getLastName())) {
+
+            return new ResponseEntity<>(
+                    "Last name is missing",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        // Step 4: Validate credit card format and stolen card status
         creditCardValidationService.validate(
                 checkoutRequest.getCreditCard()
         );
 
-        // Step 2: Create a collection of orders
+        // Step 5: Create orders
         Set<Order> orders = new HashSet<>(
                 checkoutRequest.getProducts().size()
         );
 
-        // Step 3: Process each purchased product
         for (CheckoutRequest.ProductInfo productInfo :
                 checkoutRequest.getProducts()) {
 
-            // Get product details using product ID
             Order order = new Order(
                     checkoutRequest.getFirstName(),
                     checkoutRequest.getLastName(),
@@ -68,10 +95,21 @@ public class CheckoutController {
             orders.add(order);
         }
 
-        // Step 4: Save all orders
+        // Step 6: Save orders
         ordersService.placeOrders(orders);
 
-        // Step 5: Return success
-        return "success";
+        // Step 7: Return success
+        return new ResponseEntity<>(
+                "success",
+                HttpStatus.OK
+        );
+    }
+
+    // Helper method to check null, empty and blank strings
+    private static boolean isNullOrBlank(String input) {
+
+        return input == null ||
+                input.isEmpty() ||
+                input.trim().length() == 0;
     }
 }
